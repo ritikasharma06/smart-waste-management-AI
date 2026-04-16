@@ -1,0 +1,2725 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Waste Management System Using AI</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        /* Reset and Base Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Particles Background */
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .particle {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            animation: float 20s infinite linear;
+        }
+
+        .particle:nth-child(odd) {
+            animation-duration: 15s;
+            animation-delay: -5s;
+        }
+
+        .particle:nth-child(3n) {
+            animation-duration: 25s;
+            animation-delay: -10s;
+        }
+
+        @keyframes float {
+            0% {
+                transform: translateY(100vh) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-100vh) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        /* Scroll Progress */
+        .scroll-progress {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.2);
+            z-index: 1001;
+        }
+
+        .scroll-progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #ff6b6b, #ffa500);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Navigation */
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            z-index: 1000;
+            transition: all 0.3s ease;
+        }
+
+        nav.scrolled {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+        }
+
+        nav .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 20px;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: white;
+        }
+
+        nav.scrolled .logo {
+            color: #333;
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+        }
+
+        .nav-links li {
+            margin-left: 2rem;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        nav.scrolled .nav-links a {
+            color: #333;
+        }
+
+        .nav-links a:hover {
+            color: #ff6b6b;
+        }
+
+        .dark-mode-toggle {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        nav.scrolled .dark-mode-toggle {
+            color: #333;
+        }
+
+        .dark-mode-toggle:hover {
+            transform: scale(1.1);
+        }
+
+        /* Dark Mode */
+        body.dark {
+            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+            color: #ecf0f1;
+        }
+
+        body.dark nav {
+            background: rgba(44, 62, 80, 0.9);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        body.dark .glass-card {
+            background: rgba(44, 62, 80, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        /* Sections */
+        section {
+            padding: 5rem 0;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+        }
+
+        /* Hero Section */
+        #hero {
+            text-align: center;
+            color: white;
+            position: relative;
+        }
+
+        #hero h1 {
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+            animation: fadeInUp 1s ease-out;
+        }
+
+        #hero p {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+            animation: fadeInUp 1.2s ease-out;
+        }
+
+        .cta-button {
+            background: linear-gradient(45deg, #ff6b6b, #ffa500);
+            color: white;
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            animation: fadeInUp 1.4s ease-out;
+        }
+
+        .cta-button:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Glass Cards */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            padding: 2rem;
+            margin: 1rem 0;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            transform-style: preserve-3d;
+        }
+
+        .glass-card:hover {
+            transform: translateY(-10px) rotateX(5deg) rotateY(5deg);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Section Headings */
+        #about h2, #features h2, #statistics h2, #state-pollution h2, #how-it-works h2, #demo h2, #technologies h2, #applications h2, #future h2, #testimonials h2, #contact h2 {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 2rem;
+            color: white;
+        }
+
+        /* Statistics */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+        }
+
+        .stat-item {
+            text-align: center;
+            padding: 2rem;
+        }
+
+        .stat-number {
+            font-size: 3rem;
+            font-weight: bold;
+            color: #ff6b6b;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            font-size: 1.1rem;
+            color: white;
+        }
+
+        #about p {
+            font-size: 1.1rem;
+            line-height: 1.8;
+        }
+
+        /* Features Section */
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .feature-item {
+            text-align: center;
+        }
+
+        .feature-item i {
+            font-size: 3rem;
+            color: #ff6b6b;
+            margin-bottom: 1rem;
+        }
+
+        /* How It Works */
+        .steps {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .step {
+            display: flex;
+            align-items: center;
+            margin: 2rem 0;
+            width: 100%;
+            max-width: 600px;
+        }
+
+        .step-number {
+            background: linear-gradient(45deg, #ff6b6b, #ffa500);
+            color: white;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin-right: 2rem;
+            flex-shrink: 0;
+        }
+
+        .step-content h3 {
+            margin-bottom: 0.5rem;
+            color: white;
+        }
+
+        .demo-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 4px;
+            margin: 1rem 0;
+            overflow: hidden;
+            display: none;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #ff6b6b, #ffa500);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        .upload-area {
+            border: 2px dashed rgba(255, 255, 255, 0.3);
+            border-radius: 20px;
+            padding: 3rem;
+            text-align: center;
+            margin: 2rem 0;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .upload-area:hover {
+            border-color: #ff6b6b;
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .upload-area i {
+            font-size: 4rem;
+            color: rgba(255, 255, 255, 0.5);
+            margin-bottom: 1rem;
+        }
+
+        #imageInput {
+            display: none;
+        }
+
+        #imagePreview {
+            max-width: 100%;
+            max-height: 300px;
+            border-radius: 10px;
+            margin: 1rem 0;
+            display: none;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            margin: 2rem 0;
+        }
+
+        .spinner {
+            border: 4px solid rgba(255, 255, 255, 0.3);
+            border-top: 4px solid #ff6b6b;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1rem;
+        }
+
+        .result-card {
+            display: none;
+            text-align: center;
+            margin: 2rem 0;
+        }
+
+        .result-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+        }
+
+        #resultAdvice {
+            margin-top: 1rem;
+            padding: 1rem;
+            border-radius: 16px;
+            background: rgba(255, 255, 255, 0.08);
+            color: #f7f7f7;
+            line-height: 1.7;
+        }
+
+        /* Chatbot */
+        .chatbot {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 350px;
+            height: 500px;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            display: none;
+            flex-direction: column;
+            z-index: 1001;
+        }
+
+        body.dark .chatbot {
+            background: rgba(44, 62, 80, 0.95);
+            color: #ecf0f1;
+        }
+
+        .chat-header {
+            background: linear-gradient(45deg, #ff6b6b, #ffa500);
+            color: white;
+            padding: 1rem;
+            border-radius: 20px 20px 0 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .chat-messages {
+            flex: 1;
+            padding: 1rem;
+            overflow-y: auto;
+        }
+
+        .chat-input {
+            padding: 1rem;
+            border-top: 1px solid rgba(0, 0, 0, 0.1);
+            display: flex;
+        }
+
+        .chat-input input {
+            flex: 1;
+            padding: 0.5rem;
+            border: none;
+            border-radius: 20px;
+            margin-right: 0.5rem;
+        }
+
+        .chat-input button {
+            background: #ff6b6b;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            cursor: pointer;
+        }
+
+        .chat-toggle {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: linear-gradient(45deg, #ff6b6b, #ffa500);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            font-size: 1.5rem;
+            cursor: pointer;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            z-index: 1000;
+        }
+
+        /* Technologies */
+        .tech-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+        }
+
+        .tech-item {
+            text-align: center;
+            padding: 2rem;
+        }
+
+        .tech-item i {
+            font-size: 3rem;
+            color: #ff6b6b;
+            margin-bottom: 1rem;
+        }
+
+        /* Testimonials */
+        .testimonials-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .testimonial-item {
+            padding: 2rem;
+            position: relative;
+        }
+
+        .testimonial-quote {
+            font-style: italic;
+            margin-bottom: 1rem;
+            position: relative;
+        }
+
+        .testimonial-quote::before {
+            content: '"';
+            font-size: 4rem;
+            color: rgba(255, 255, 255, 0.3);
+            position: absolute;
+            top: -20px;
+            left: -20px;
+        }
+
+        .testimonial-author {
+            font-weight: bold;
+            color: #ff6b6b;
+        }
+
+        .testimonial-role {
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .contact-form input, .contact-form textarea {
+            width: 100%;
+            padding: 1rem;
+            margin: 0.5rem 0;
+            border: none;
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+        }
+
+        .contact-form input::placeholder, .contact-form textarea::placeholder {
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .contact-form button {
+            background: linear-gradient(45deg, #ff6b6b, #ffa500);
+            color: white;
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 1rem;
+        }
+
+        .newsletter {
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .newsletter h3 {
+            margin-bottom: 1rem;
+            color: white;
+        }
+
+        .newsletter .input-group {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .newsletter input {
+            flex: 1;
+            padding: 0.8rem;
+            border: none;
+            border-radius: 25px;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+        }
+
+        .newsletter input::placeholder {
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .newsletter button {
+            padding: 0.8rem 1.5rem;
+            border: none;
+            border-radius: 25px;
+            background: linear-gradient(45deg, #ff6b6b, #ffa500);
+            color: white;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .admin-button-wrapper {
+            text-align: center;
+            margin-top: 1.5rem;
+        }
+
+        .admin-button {
+            background: rgba(255, 255, 255, 0.12);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            padding: 0.9rem 1.8rem;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+        }
+
+        .admin-button:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .admin-panel,
+        .admin-login-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.65);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+            padding: 1rem;
+        }
+
+        .admin-card,
+        .admin-login-card {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(20px);
+            border-radius: 24px;
+            max-width: 900px;
+            width: 100%;
+            padding: 2rem;
+            color: white;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+        }
+
+        .admin-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .admin-header h2 {
+            margin: 0;
+        }
+
+        .admin-header button {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        .admin-summary {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .admin-summary .summary-card {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            padding: 1.2rem;
+            border-radius: 18px;
+            text-align: center;
+        }
+
+        .admin-summary .summary-card strong {
+            display: block;
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+            color: #ff6b6b;
+        }
+
+        .state-pollution-grid {
+            display: grid;
+            grid-template-columns: minmax(280px, 1fr) minmax(380px, 1.2fr);
+            gap: 2rem;
+            align-items: start;
+        }
+
+        .pollution-panel p {
+            margin-bottom: 1.5rem;
+            opacity: 0.95;
+        }
+
+        .state-selector label {
+            display: block;
+            margin-bottom: 0.75rem;
+            color: rgba(255, 255, 255, 0.85);
+        }
+
+        .state-selector select {
+            width: 100%;
+            padding: 1rem;
+            border-radius: 18px;
+            border: none;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            font-size: 1rem;
+        }
+
+        .state-summary {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+
+        .state-summary .summary-badge {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.16);
+            border-radius: 18px;
+            padding: 1.1rem;
+            text-align: center;
+        }
+
+        .state-summary .summary-badge span {
+            display: block;
+            font-size: 2rem;
+            color: #ff6b6b;
+            margin-bottom: 0.4rem;
+        }
+
+        .state-bars .bar {
+            margin-bottom: 1rem;
+        }
+
+        .state-bars .bar-label {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
+            color: #f1f1f1;
+            font-size: 0.95rem;
+        }
+
+        .bar-fill {
+            background: rgba(255, 255, 255, 0.12);
+            border-radius: 999px;
+            overflow: hidden;
+            height: 14px;
+        }
+
+        .bar-fill span {
+            display: block;
+            height: 100%;
+            width: 0;
+            background: linear-gradient(90deg, #ff6b6b, #ffa500);
+            transition: width 0.5s ease;
+        }
+
+        .pollution-table-panel h3 {
+            margin-bottom: 1rem;
+        }
+
+        .table-wrapper {
+            max-height: 420px;
+            overflow-y: auto;
+        }
+
+        .pollution-table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 720px;
+        }
+
+        .pollution-table th,
+        .pollution-table td {
+            padding: 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+        }
+
+        .pollution-table th {
+            color: #ffd17d;
+            text-align: left;
+            font-weight: 600;
+        }
+
+        .pollution-table td {
+            color: #f7f7f7;
+        }
+
+        .pollution-table tbody tr:hover {
+            background: rgba(255, 255, 255, 0.06);
+        }
+
+        .admin-list {
+            max-height: 400px;
+            overflow-y: auto;
+            margin-bottom: 1.2rem;
+        }
+
+        .admin-entry {
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 16px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .admin-entry h4 {
+            margin: 0 0 0.5rem;
+            color: #ff6b6b;
+        }
+
+        .admin-action {
+            background: linear-gradient(45deg, #ff6b6b, #ffa500);
+            border: none;
+            color: white;
+            padding: 1rem 1.5rem;
+            border-radius: 30px;
+            cursor: pointer;
+            width: 100%;
+            font-weight: 700;
+        }
+
+        .admin-login-card input {
+            width: 100%;
+            padding: 1rem;
+            border-radius: 16px;
+            border: none;
+            margin-bottom: 1rem;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+        }
+
+        .admin-login-card button {
+            width: 100%;
+            padding: 1rem;
+            border-radius: 25px;
+            border: none;
+            background: linear-gradient(45deg, #ff6b6b, #ffa500);
+            color: white;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .admin-login-card p {
+            margin-top: 0.5rem;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        /* Footer */
+        footer {
+            background: rgba(0, 0, 0, 0.5);
+            color: white;
+            text-align: center;
+            padding: 2rem 0;
+        }
+
+        .footer-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .social-links {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .social-links a {
+            color: white;
+            font-size: 1.5rem;
+            transition: transform 0.3s ease, color 0.3s ease;
+        }
+
+        .social-links a:hover {
+            transform: scale(1.2);
+            color: #ff6b6b;
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .fade-in {
+            animation: fadeInUp 0.6s ease-out;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            #hero h1 {
+                font-size: 2.5rem;
+            }
+
+            nav .container {
+                flex-direction: column;
+            }
+
+            .nav-links {
+                margin-top: 1rem;
+            }
+
+            .nav-links li {
+                margin-left: 1rem;
+            }
+
+            .step {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .step-number {
+                margin-right: 0;
+                margin-bottom: 1rem;
+            }
+
+            .chatbot {
+                width: 90%;
+                height: 70%;
+                bottom: 10px;
+                right: 10px;
+            }
+        }
+
+        /* Smart Dustbin Styles */
+        #smart-dustbin {
+            padding: 5rem 0;
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.1), rgba(118, 75, 162, 0.1));
+        }
+
+        .section-description {
+            text-align: center;
+            font-size: 1.2rem;
+            color: rgba(255, 255, 255, 0.8);
+            margin-bottom: 3rem;
+        }
+
+        .dustbin-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+            margin-bottom: 3rem;
+        }
+
+        .dustbin-visual {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .dustbin-body {
+            position: relative;
+            width: 200px;
+            height: 300px;
+            background: linear-gradient(145deg, #4a5568, #2d3748);
+            border-radius: 10px 10px 20px 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            border: 3px solid #e2e8f0;
+            overflow: hidden;
+        }
+
+        .dustbin-lid {
+            position: absolute;
+            top: -20px;
+            left: -10px;
+            right: -10px;
+            height: 40px;
+            background: linear-gradient(145deg, #2d3748, #1a202c);
+            border-radius: 15px;
+            transform-origin: center bottom;
+            transition: transform 0.5s ease;
+            z-index: 2;
+        }
+
+        .dustbin-lid.open {
+            transform: rotateX(-30deg);
+        }
+
+        .lid-handle {
+            position: absolute;
+            top: 5px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 30px;
+            height: 8px;
+            background: #4a5568;
+            border-radius: 4px;
+        }
+
+        .dustbin-content {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 0;
+            background: linear-gradient(to top, #68d391, #48bb78, #38a169);
+            transition: height 0.5s ease;
+            border-radius: 0 0 17px 17px;
+        }
+
+        .waste-level {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: repeating-linear-gradient(
+                45deg,
+                rgba(255, 255, 255, 0.1),
+                rgba(255, 255, 255, 0.1) 10px,
+                rgba(255, 255, 255, 0.2) 10px,
+                rgba(255, 255, 255, 0.2) 20px
+            );
+            height: 100%;
+            animation: waste-pattern 2s infinite;
+        }
+
+        @keyframes waste-pattern {
+            0% { transform: translateY(0); }
+            50% { transform: translateY(-5px); }
+            100% { transform: translateY(0); }
+        }
+
+        .sensor-indicator, .motion-sensor {
+            position: absolute;
+            top: 20px;
+            right: -40px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 5px;
+            font-size: 0.8rem;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .motion-sensor {
+            top: 80px;
+            right: -35px;
+        }
+
+        .sensor-indicator i, .motion-sensor i {
+            font-size: 1.5rem;
+            color: #ff6b6b;
+            animation: sensor-pulse 2s infinite;
+        }
+
+        .motion-sensor i {
+            color: #4ecdc4;
+        }
+
+        @keyframes sensor-pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.7; transform: scale(1.1); }
+        }
+
+        .dustbin-controls {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+
+        .control-panel, .alert-panel {
+            padding: 2rem;
+        }
+
+        .status-info {
+            margin-bottom: 2rem;
+        }
+
+        .status-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .status-label {
+            font-weight: 600;
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .status-value {
+            color: #4ecdc4;
+            font-weight: 500;
+        }
+
+        .control-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .control-btn {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .control-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .alerts-list {
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        .alert-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem;
+            margin-bottom: 0.5rem;
+            border-radius: 8px;
+            animation: slideIn 0.3s ease;
+        }
+
+        .alert-item.info {
+            background: rgba(78, 205, 196, 0.1);
+            border-left: 4px solid #4ecdc4;
+        }
+
+        .alert-item.warning {
+            background: rgba(255, 193, 7, 0.1);
+            border-left: 4px solid #ffc107;
+        }
+
+        .alert-item.danger {
+            background: rgba(255, 107, 107, 0.1);
+            border-left: 4px solid #ff6b6b;
+        }
+
+        .alert-item i {
+            font-size: 1.2rem;
+        }
+
+        .alert-item.info i { color: #4ecdc4; }
+        .alert-item.warning i { color: #ffc107; }
+        .alert-item.danger i { color: #ff6b6b; }
+
+        @keyframes slideIn {
+            from { transform: translateX(-100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        .mobile-app-preview {
+            margin-bottom: 3rem;
+        }
+
+        .app-mockup {
+            max-width: 300px;
+            margin: 0 auto;
+            background: linear-gradient(145deg, #1a1a1a, #2d2d2d);
+            border-radius: 20px;
+            padding: 1.5rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .app-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .app-header h4 {
+            margin: 0;
+            color: white;
+            font-size: 1.1rem;
+        }
+
+        .app-notification {
+            background: #ff6b6b;
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            animation: notification-pulse 1s infinite;
+        }
+
+        @keyframes notification-pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        .app-content {
+            color: white;
+        }
+
+        .app-dustbin-status {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+        }
+
+        .app-dustbin-icon {
+            font-size: 2rem;
+            color: #4ecdc4;
+        }
+
+        .app-status-details {
+            flex: 1;
+        }
+
+        .app-status-details span:first-child {
+            display: block;
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        .app-status-details span:last-child {
+            display: block;
+            font-size: 0.8rem;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .app-action-buttons {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .app-btn {
+            flex: 1;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 0.8rem;
+            border-radius: 8px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.3rem;
+        }
+
+        .app-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 3px 10px rgba(102, 126, 234, 0.3);
+        }
+
+        .iot-features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+        }
+
+        .feature-card {
+            text-align: center;
+            padding: 2rem;
+            transition: transform 0.3s ease;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .feature-icon {
+            font-size: 3rem;
+            color: #ff6b6b;
+            margin-bottom: 1rem;
+        }
+
+        .feature-card h4 {
+            margin-bottom: 1rem;
+            color: white;
+        }
+
+        .feature-card p {
+            color: rgba(255, 255, 255, 0.8);
+            line-height: 1.6;
+        }
+
+        .route-grid {
+            display: grid;
+            grid-template-columns: 1.2fr 0.8fr;
+            gap: 2rem;
+            align-items: start;
+            margin-top: 2rem;
+        }
+
+        .route-map-card,
+        .route-info-card {
+            padding: 2rem;
+        }
+
+        .route-map {
+            position: relative;
+            background: linear-gradient(180deg, #1b2a4a, #09203f);
+            border-radius: 24px;
+            min-height: 320px;
+            padding: 1.5rem;
+            display: grid;
+            gap: 1rem;
+            color: #f8fafc;
+            box-shadow: inset 0 0 0 1px rgba(255,255,255,0.08);
+        }
+
+        .route-point {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px dashed rgba(255, 255, 255, 0.3);
+            border-radius: 18px;
+            padding: 1rem 1.2rem;
+            width: fit-content;
+            font-weight: 600;
+        }
+
+        .route-point.start {
+            background: rgba(78, 205, 196, 0.16);
+            border-color: rgba(78, 205, 196, 0.5);
+        }
+
+        .route-point.stop {
+            background: rgba(102, 126, 234, 0.16);
+            border-color: rgba(102, 126, 234, 0.5);
+        }
+
+        .route-action {
+            margin-top: auto;
+            width: 100%;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 0.9rem;
+            border-radius: 12px;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        .route-action:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
+        }
+
+        .route-feature-list {
+            list-style: none;
+            padding: 0;
+            margin-bottom: 1.5rem;
+        }
+
+        .route-feature-list li {
+            margin-bottom: 1rem;
+            color: rgba(255, 255, 255, 0.88);
+            line-height: 1.7;
+        }
+
+        .route-summary-cards {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .route-summary {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 18px;
+            padding: 1rem;
+            text-align: center;
+        }
+
+        .route-summary span {
+            display: block;
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #ffffff;
+            margin-bottom: 0.4rem;
+        }
+
+        .route-summary p {
+            margin: 0;
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.95rem;
+        }
+
+        .route-steps {
+            display: grid;
+            gap: 0.75rem;
+        }
+
+        .route-step {
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 14px;
+            padding: 1rem;
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .route-step strong {
+            display: block;
+            margin-bottom: 0.25rem;
+            color: #ffffff;
+        }
+
+        @media (max-width: 992px) {
+            .route-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .dustbin-container {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+
+            .dustbin-visual {
+                order: 2;
+            }
+
+            .dustbin-controls {
+                order: 1;
+            }
+
+            .iot-features {
+                grid-template-columns: 1fr;
+            }
+
+            .app-mockup {
+                max-width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Scroll Progress -->
+    <div class="scroll-progress">
+        <div class="scroll-progress-bar" id="scrollProgressBar"></div>
+    </div>
+
+    <!-- Particles Background -->
+    <div class="particles" id="particles"></div>
+    <!-- Navigation -->
+    <nav id="navbar">
+        <div class="container">
+            <div class="logo">SWMS AI</div>
+            <ul class="nav-links">
+                <li><a href="#hero">Home</a></li>
+                <li><a href="#about">About</a></li>
+                <li><a href="#features">Features</a></li>
+                <li><a href="#statistics">Statistics</a></li>
+                <li><a href="#state-pollution">State Pollution</a></li>
+                <li><a href="#smart-dustbin">Smart Dustbin</a></li>
+                <li><a href="#route-system">Route System</a></li>
+                <li><a href="#how-it-works">How It Works</a></li>
+                <li><a href="#demo">Demo</a></li>
+                <li><a href="#contact">Contact</a></li>
+            </ul>
+            <button class="dark-mode-toggle" id="darkModeToggle"><i class="fas fa-moon"></i></button>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="hero">
+        <div class="container">
+            <h1>Smart Waste Management System Using AI</h1>
+            <p>Revolutionizing waste classification with cutting-edge artificial intelligence technology</p>
+            <button class="cta-button" onclick="scrollToSection('demo')">Try Live Demo</button>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about">
+        <div class="container">
+            <div class="glass-card">
+                <h2>About the Project</h2>
+                <p>Our Smart Waste Management System leverages advanced AI algorithms to automatically classify different types of waste materials. By using computer vision and machine learning, the system can identify plastic, paper, metal, organic, and glass waste with high accuracy, making waste sorting more efficient and environmentally friendly.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section id="features">
+        <div class="container">
+            <h2>Key Features</h2>
+            <div class="features-grid">
+                <div class="glass-card feature-item">
+                    <i class="fas fa-camera"></i>
+                    <h3>Image Capture</h3>
+                    <p>Upload waste images via camera or file selection</p>
+                </div>
+                <div class="glass-card feature-item">
+                    <i class="fas fa-brain"></i>
+                    <h3>AI Processing</h3>
+                    <p>Advanced AI algorithms for accurate classification</p>
+                </div>
+                <div class="glass-card feature-item">
+                    <i class="fas fa-recycle"></i>
+                    <h3>Waste Classification</h3>
+                    <p>Categorize waste into 5 main types</p>
+                </div>
+                <div class="glass-card feature-item">
+                    <i class="fas fa-mobile-alt"></i>
+                    <h3>Responsive Design</h3>
+                    <p>Works seamlessly on all devices</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Statistics Section -->
+    <section id="statistics">
+        <div class="container">
+            <h2>Impact Statistics</h2>
+            <div class="glass-card">
+                <div class="stats-grid">
+                    <div class="stat-item">
+                        <div class="stat-number" data-target="95">0</div>
+                        <div class="stat-label">Accuracy Rate</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number" data-target="50000">0</div>
+                        <div class="stat-label">Waste Items Classified</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number" data-target="30">0</div>
+                        <div class="stat-label">Time Saved (minutes)</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number" data-target="25">0</div>
+                        <div class="stat-label">CO2 Reduction (tons)</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Pollution by State Section -->
+    <section id="state-pollution">
+        <div class="container">
+            <h2>Pollution Breakdown by State</h2>
+            <div class="glass-card state-pollution-grid">
+                <div class="pollution-panel">
+                    <p>Explore how waste types vary across 20 states with accurate plastic, paper, metal, organic, and glass pollution counts. Select a state to view percentage distribution and top waste contributors.</p>
+                    <div class="state-selector">
+                        <label for="stateSelect">Choose State</label>
+                        <select id="stateSelect" onchange="renderStatePollution()"></select>
+                    </div>
+                    <div class="state-summary" id="stateSummary"></div>
+                    <div class="state-bars" id="stateBars"></div>
+                </div>
+                <div class="pollution-table-panel">
+                    <h3>State Pollution Data</h3>
+                    <div class="table-wrapper">
+                        <table class="pollution-table" id="pollutionTable">
+                            <thead>
+                                <tr>
+                                    <th>State</th>
+                                    <th>Plastic</th>
+                                    <th>Paper</th>
+                                    <th>Metal</th>
+                                    <th>Organic</th>
+                                    <th>Glass</th>
+                                    <th>Total</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- How It Works Section -->
+    <section id="how-it-works">
+        <div class="container">
+            <h2>How It Works</h2>
+            <div class="steps">
+                <div class="step fade-in">
+                    <div class="step-number">1</div>
+                    <div class="step-content">
+                        <h3>Capture Waste Image</h3>
+                        <p>Take a photo or upload an image of the waste material</p>
+                    </div>
+                </div>
+                <div class="step fade-in">
+                    <div class="step-number">2</div>
+                    <div class="step-content">
+                        <h3>Process Image</h3>
+                        <p>AI analyzes the image using computer vision techniques</p>
+                    </div>
+                </div>
+                <div class="step fade-in">
+                    <div class="step-number">3</div>
+                    <div class="step-content">
+                        <h3>Apply AI Model</h3>
+                        <p>Machine learning model processes the visual data</p>
+                    </div>
+                </div>
+                <div class="step fade-in">
+                    <div class="step-number">4</div>
+                    <div class="step-content">
+                        <h3>Classify Waste</h3>
+                        <p>System categorizes the waste into appropriate type</p>
+                    </div>
+                </div>
+                <div class="step fade-in">
+                    <div class="step-number">5</div>
+                    <div class="step-content">
+                        <h3>Display Result</h3>
+                        <p>Show classification result with icon and description</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Live Demo Section -->
+    <section id="demo">
+        <div class="container">
+            <h2>Live Demo</h2>
+            <div class="glass-card demo-container">
+                <div class="upload-area" id="uploadArea">
+                    <i class="fas fa-cloud-upload-alt"></i>
+                    <p>Click to upload or drag and drop an image</p>
+                    <input type="file" id="imageInput" accept="image/*">
+                </div>
+                <div class="progress-bar" id="progressBar">
+                    <div class="progress-fill" id="progressFill"></div>
+                </div>
+                <img id="imagePreview" alt="Preview">
+                <div class="loading" id="loading">
+                    <div class="spinner"></div>
+                    <p>Processing image with AI...</p>
+                </div>
+                <div class="result-card glass-card" id="resultCard">
+                    <div id="resultIcon"></div>
+                    <h3 id="resultTitle"></h3>
+                    <p id="resultDescription"></p>
+                    <p id="resultAdvice"></p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Technologies Section -->
+    <section id="technologies">
+        <div class="container">
+            <h2>Technologies Used</h2>
+            <div class="tech-grid">
+                <div class="glass-card tech-item">
+                    <i class="fab fa-html5"></i>
+                    <h3>HTML5</h3>
+                    <p>Modern web structure</p>
+                </div>
+                <div class="glass-card tech-item">
+                    <i class="fab fa-css3-alt"></i>
+                    <h3>CSS3</h3>
+                    <p>Responsive styling</p>
+                </div>
+                <div class="glass-card tech-item">
+                    <i class="fab fa-js-square"></i>
+                    <h3>JavaScript</h3>
+                    <p>Interactive functionality</p>
+                </div>
+                <div class="glass-card tech-item">
+                    <i class="fas fa-brain"></i>
+                    <h3>AI/ML</h3>
+                    <p>Computer vision algorithms</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Applications Section -->
+    <section id="applications">
+        <div class="container">
+            <div class="glass-card">
+                <h2>Applications</h2>
+                <ul style="list-style: none; padding: 0;">
+                    <li style="margin: 1rem 0;"><i class="fas fa-check-circle" style="color: #ff6b6b; margin-right: 1rem;"></i>Municipal waste management facilities</li>
+                    <li style="margin: 1rem 0;"><i class="fas fa-check-circle" style="color: #ff6b6b; margin-right: 1rem;"></i>Recycling centers and plants</li>
+                    <li style="margin: 1rem 0;"><i class="fas fa-check-circle" style="color: #ff6b6b; margin-right: 1rem;"></i>Smart city initiatives</li>
+                    <li style="margin: 1rem 0;"><i class="fas fa-check-circle" style="color: #ff6b6b; margin-right: 1rem;"></i>Educational institutions</li>
+                    <li style="margin: 1rem 0;"><i class="fas fa-check-circle" style="color: #ff6b6b; margin-right: 1rem;"></i>Environmental monitoring systems</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <!-- Future Scope Section -->
+    <section id="future">
+        <div class="container">
+            <div class="glass-card">
+                <h2>Future Scope</h2>
+                <ul style="list-style: none; padding: 0;">
+                    <li style="margin: 1rem 0;"><i class="fas fa-rocket" style="color: #ff6b6b; margin-right: 1rem;"></i>Integration with IoT sensors for real-time monitoring</li>
+                    <li style="margin: 1rem 0;"><i class="fas fa-rocket" style="color: #ff6b6b; margin-right: 1rem;"></i>Mobile app development for on-the-go classification</li>
+                    <li style="margin: 1rem 0;"><i class="fas fa-rocket" style="color: #ff6b6b; margin-right: 1rem;"></i>Blockchain integration for waste tracking</li>
+                    <li style="margin: 1rem 0;"><i class="fas fa-rocket" style="color: #ff6b6b; margin-right: 1rem;"></i>Advanced AI models for higher accuracy</li>
+                    <li style="margin: 1rem 0;"><i class="fas fa-rocket" style="color: #ff6b6b; margin-right: 1rem;"></i>Global waste management network</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <!-- Smart Dustbin Section -->
+    <section id="smart-dustbin">
+        <div class="container">
+            <h2>Smart Dustbin with IoT Sensors</h2>
+            <p class="section-description">Intelligent waste containers that prevent overflow and optimize collection routes</p>
+            <div class="dustbin-explanation glass-card">
+                <h3>How It Works</h3>
+                <ul>
+                    <li><strong>Ultrasonic sensor</strong> measures the garbage height and calculates fill percentage.</li>
+                    <li><strong>Mobile alert</strong> is triggered when the bin reaches high capacity to notify collection teams.</li>
+                    <li><strong>Motion sensor</strong> optionally opens the lid automatically for users.</li>
+                    <li><strong>Overflow prevention</strong> keeps public spaces clean by alerting before the bin overflows.</li>
+                </ul>
+            </div>
+
+            <div class="dustbin-container">
+                <div class="dustbin-visual">
+                    <div class="dustbin-body">
+                        <div class="dustbin-lid" id="dustbinLid">
+                            <div class="lid-handle"></div>
+                        </div>
+                        <div class="dustbin-content" id="dustbinContent">
+                            <div class="waste-level" id="wasteLevel"></div>
+                        </div>
+                        <div class="sensor-indicator">
+                            <i class="fas fa-radar" id="ultrasonicSensor"></i>
+                            <span>Ultrasonic Sensor</span>
+                        </div>
+                        <div class="motion-sensor">
+                            <i class="fas fa-eye" id="motionSensor"></i>
+                            <span>Motion Sensor</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="dustbin-controls">
+                    <div class="glass-card control-panel">
+                        <h3>Dustbin Status</h3>
+                        <div class="status-info">
+                            <div class="status-item">
+                                <span class="status-label">Fill Level:</span>
+                                <span class="status-value" id="fillLevel">0%</span>
+                            </div>
+                            <div class="status-item">
+                                <span class="status-label">Status:</span>
+                                <span class="status-value" id="dustbinStatus">Empty</span>
+                            </div>
+                            <div class="status-item">
+                                <span class="status-label">Last Collection:</span>
+                                <span class="status-value" id="lastCollection">Never</span>
+                            </div>
+                        </div>
+
+                        <div class="control-buttons">
+                            <button id="addWasteBtn" class="control-btn" type="button" onclick="simulateWasteAddition()">
+                                <i class="fas fa-plus"></i> Add Waste
+                            </button>
+                            <button id="emptyDustbinBtn" class="control-btn" type="button" onclick="emptyDustbin()">
+                                <i class="fas fa-trash"></i> Empty Dustbin
+                            </button>
+                            <button id="motionDetectedBtn" class="control-btn" type="button" onclick="simulateMotion()">
+                                <i class="fas fa-hand-paper"></i> Motion Detected
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="glass-card alert-panel">
+                        <h3>Smart Alerts</h3>
+                        <div class="alerts-list" id="alertsList">
+                            <div class="alert-item info">
+                                <i class="fas fa-info-circle"></i>
+                                <span>Dustbin monitoring active</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mobile-app-preview">
+                <div class="glass-card app-mockup">
+                    <div class="app-header">
+                        <h4>Smart Waste App</h4>
+                        <div class="app-notification" id="appNotification" style="display: none;">
+                            <i class="fas fa-bell"></i>
+                            <span>Dustbin Full Alert!</span>
+                        </div>
+                    </div>
+                    <div class="app-content">
+                        <div class="app-dustbin-status">
+                            <div class="app-dustbin-icon">
+                                <i class="fas fa-trash"></i>
+                            </div>
+                            <div class="app-status-details">
+                                <span id="appFillLevel">0% Full</span>
+                                <span id="appLocation">Central Park, Sector 5</span>
+                            </div>
+                        </div>
+                        <div class="app-action-buttons">
+                            <button class="app-btn" onclick="scheduleCollection()">
+                                <i class="fas fa-calendar"></i> Schedule Collection
+                            </button>
+                            <button class="app-btn" onclick="viewRoute()">
+                                <i class="fas fa-route"></i> View Route
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="iot-features">
+                <div class="glass-card feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-wave-square"></i>
+                    </div>
+                    <h4>Ultrasonic Level Detection</h4>
+                    <p>Non-contact distance measurement using sound waves to accurately detect waste levels</p>
+                </div>
+                <div class="glass-card feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-mobile-alt"></i>
+                    </div>
+                    <h4>Mobile App Integration</h4>
+                    <p>Real-time notifications and alerts sent directly to waste management teams</p>
+                </div>
+                <div class="glass-card feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-hand-paper"></i>
+                    </div>
+                    <h4>Auto-Open Lid (Optional)</h4>
+                    <p>Motion sensors detect approaching users and automatically open the lid</p>
+                </div>
+                <div class="glass-card feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                    <h4>Overflow Prevention</h4>
+                    <p>Prevents overflowing garbage in public places by alerting before capacity is reached</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Smart Route System Section -->
+    <section id="route-system">
+        <div class="container">
+            <h2>Smart Garbage Collection Route System</h2>
+            <p class="section-description">Optimize garbage truck routes by using GPS data and smart bin fill levels.</p>
+
+            <div class="route-grid">
+                <div class="glass-card route-map-card">
+                    <h3>Route Optimization Map</h3>
+                    <div class="route-map" id="routeMap">
+                        <div class="route-point start">Depot</div>
+                    </div>
+                    <button class="route-action" onclick="generateRoute()">Generate Best Route</button>
+                </div>
+
+                <div class="glass-card route-info-card">
+                    <h3>How it Works</h3>
+                    <ul class="route-feature-list">
+                        <li>GPS locates each smart bin in the city.</li>
+                        <li>Bin fill levels are used to prioritize collection.</li>
+                        <li>Shortest feasible route is calculated for the truck.</li>
+                        <li>Unnecessary trips are avoided to save fuel and time.</li>
+                    </ul>
+                    <div class="route-summary-cards">
+                        <div class="summary-card route-summary">
+                            <span id="routeDistance">0.0 km</span>
+                            <p>Total Distance</p>
+                        </div>
+                        <div class="summary-card route-summary">
+                            <span id="routeStops">0</span>
+                            <p>Stops</p>
+                        </div>
+                        <div class="summary-card route-summary">
+                            <span id="routeSavings">0%</span>
+                            <p>Fuel Savings</p>
+                        </div>
+                    </div>
+                    <div class="route-steps" id="routeSteps"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials Section -->
+    <section id="testimonials">
+        <div class="container">
+            <h2>What Experts Say</h2>
+            <div class="testimonials-grid">
+                <div class="glass-card testimonial-item">
+                    <p class="testimonial-quote">This AI-powered waste management system represents a breakthrough in environmental technology. The accuracy and efficiency are remarkable.</p>
+                    <div class="testimonial-author">Dr. Sarah Johnson</div>
+                    <div class="testimonial-role">Environmental Scientist, MIT</div>
+                </div>
+                <div class="glass-card testimonial-item">
+                    <p class="testimonial-quote">Impressive implementation of computer vision for real-world applications. This could revolutionize waste sorting globally.</p>
+                    <div class="testimonial-author">Prof. Michael Chen</div>
+                    <div class="testimonial-role">AI Researcher, Stanford University</div>
+                </div>
+                <div class="glass-card testimonial-item">
+                    <p class="testimonial-quote">The user interface is intuitive and the AI performance is outstanding. A perfect blend of technology and usability.</p>
+                    <div class="testimonial-author">Emma Rodriguez</div>
+                    <div class="testimonial-role">UX Designer, Google</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact">
+        <div class="container">
+            <h2>Contact Us</h2>
+            <div class="glass-card contact-form">
+                <input type="text" placeholder="Your Name" id="name">
+                <input type="email" placeholder="Your Email" id="email">
+                <textarea placeholder="Your Message" id="message" rows="5"></textarea>
+                <button onclick="sendMessage()">Send Message</button>
+                <div class="newsletter">
+                    <h3>Stay Updated</h3>
+                    <p>Subscribe to our newsletter for the latest updates on AI and environmental technology.</p>
+                    <div class="input-group">
+                        <input type="email" placeholder="Enter your email" id="newsletterEmail">
+                        <button onclick="subscribeNewsletter()">Subscribe</button>
+                    </div>
+                </div>
+                <div class="admin-button-wrapper">
+                    <button class="admin-button" onclick="openAdminLogin()">Admin Login</button>
+                    <p>Admin can open the dashboard to review saved submissions.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <div class="admin-login-modal" id="adminLoginModal">
+        <div class="admin-login-card">
+            <div class="admin-header">
+                <h2>Admin Access</h2>
+                <button onclick="closeAdminLogin()">&times;</button>
+            </div>
+            <input type="password" id="adminPassword" placeholder="Enter admin password">
+            <button onclick="verifyAdminLogin()">Enter Dashboard</button>
+            <p>Password for demo: <strong>admin2026</strong></p>
+        </div>
+    </div>
+    <div class="admin-panel" id="adminPanel">
+        <div class="admin-card">
+            <div class="admin-header">
+                <h2>Admin Dashboard</h2>
+                <button onclick="closeAdminPanel()">&times;</button>
+            </div>
+            <div class="admin-summary">
+                <div class="summary-card">
+                    <strong id="adminMessagesCount">0</strong>
+                    Messages Submitted
+                </div>
+                <div class="summary-card">
+                    <strong id="adminNewsletterCount">0</strong>
+                    Newsletter Subscribers
+                </div>
+            </div>
+            <div class="admin-list" id="adminList"></div>
+            <button class="admin-action" onclick="exportAdminData()">Export Submissions</button>
+        </div>
+    </div>
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <p>&copy; 2024 Smart Waste Management System. All rights reserved.</p>
+                <div class="social-links">
+                    <a href="#" title="Facebook"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#" title="Twitter"><i class="fab fa-twitter"></i></a>
+                    <a href="#" title="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+                    <a href="#" title="GitHub"><i class="fab fa-github"></i></a>
+                    <a href="#" title="Instagram"><i class="fab fa-instagram"></i></a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Chatbot -->
+    <div class="chatbot" id="chatbot">
+        <div class="chat-header">
+            <span>AI Assistant</span>
+            <button onclick="toggleChatbot()"><i class="fas fa-times"></i></button>
+        </div>
+        <div class="chat-messages" id="chatMessages">
+            <div class="message bot">Hello! How can I help you with our Smart Waste Management System?</div>
+        </div>
+        <div class="chat-input">
+            <input type="text" id="chatInput" placeholder="Type your message...">
+            <button onclick="sendChatMessage()"><i class="fas fa-paper-plane"></i></button>
+        </div>
+    </div>
+
+    <button class="chat-toggle" id="chatToggle" onclick="toggleChatbot()">
+        <i class="fas fa-comments"></i>
+    </button>
+
+    <script>
+        // Navigation scroll effect
+        window.addEventListener('scroll', function() {
+            const nav = document.getElementById('navbar');
+            if (window.scrollY > 100) {
+                nav.classList.add('scrolled');
+            } else {
+                nav.classList.remove('scrolled');
+            }
+        });
+
+        // Smooth scroll to sections
+        function scrollToSection(sectionId) {
+            document.getElementById(sectionId).scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // Dark mode toggle
+        const darkModeToggle = document.getElementById('darkModeToggle');
+        darkModeToggle.addEventListener('click', function() {
+            document.body.classList.toggle('dark');
+            const icon = this.querySelector('i');
+            if (document.body.classList.contains('dark')) {
+                icon.className = 'fas fa-sun';
+            } else {
+                icon.className = 'fas fa-moon';
+            }
+        });
+
+        // Image upload and preview
+        const uploadArea = document.getElementById('uploadArea');
+        const imageInput = document.getElementById('imageInput');
+        const imagePreview = document.getElementById('imagePreview');
+        const loading = document.getElementById('loading');
+        const resultCard = document.getElementById('resultCard');
+
+        uploadArea.addEventListener('click', () => imageInput.click());
+        uploadArea.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadArea.style.borderColor = '#ff6b6b';
+        });
+        uploadArea.addEventListener('dragleave', () => {
+            uploadArea.style.borderColor = 'rgba(255, 255, 255, 0.3)';
+        });
+        uploadArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadArea.style.borderColor = 'rgba(255, 255, 255, 0.3)';
+            const files = e.dataTransfer.files;
+            if (files.length > 0) {
+                handleImageUpload(files[0]);
+            }
+        });
+
+        imageInput.addEventListener('change', (e) => {
+            if (e.target.files.length > 0) {
+                handleImageUpload(e.target.files[0]);
+            }
+        });
+
+        function handleImageUpload(file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                imagePreview.src = e.target.result;
+                imagePreview.style.display = 'block';
+                uploadArea.style.display = 'none';
+                simulateAIProcessing();
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function simulateAIProcessing() {
+            loading.style.display = 'block';
+            const progressBar = document.getElementById('progressBar');
+            const progressFill = document.getElementById('progressFill');
+            progressBar.style.display = 'block';
+            let progress = 0;
+            const interval = setInterval(() => {
+                progress += 10;
+                progressFill.style.width = progress + '%';
+                if (progress >= 100) {
+                    clearInterval(interval);
+                    setTimeout(() => {
+                        loading.style.display = 'none';
+                        progressBar.style.display = 'none';
+                        showResult();
+                    }, 500);
+                }
+            }, 300);
+        }
+
+        function showResult() {
+            const categories = [
+                {
+                    name: 'Plastic',
+                    icon: 'fas fa-bottle-water',
+                    desc: 'Recyclable plastic waste',
+                    advice: 'Rinse and crush plastic bottles before placing them in the recycling bin. Avoid throwing plastic in organic waste or natural areas.'
+                },
+                {
+                    name: 'Paper',
+                    icon: 'fas fa-newspaper',
+                    desc: 'Paper and cardboard materials',
+                    advice: 'Keep paper dry and flatten cardboard boxes before recycling. Do not include greasy or food-soiled paper in the recycling stream.'
+                },
+                {
+                    name: 'Metal',
+                    icon: 'fas fa-cogs',
+                    desc: 'Metal objects and cans',
+                    advice: 'Clean and dry metal cans before recycling. Larger metal items should be taken to a scrap recycling center if possible.'
+                },
+                {
+                    name: 'Organic',
+                    icon: 'fas fa-leaf',
+                    desc: 'Food waste and biodegradable materials',
+                    advice: 'Send organic waste to compost or a green waste bin. Avoid mixing organic materials with plastics or metals.'
+                },
+                {
+                    name: 'Glass',
+                    icon: 'fas fa-wine-bottle',
+                    desc: 'Glass containers and bottles',
+                    advice: 'Rinse glass containers and use a glass recycling bin. Do not dispose of broken glass in regular trash without wrapping it safely.'
+                }
+            ];
+            const randomCategory = categories[Math.floor(Math.random() * categories.length)];
+            
+            document.getElementById('resultIcon').innerHTML = `<i class="${randomCategory.icon}" style="color: #ff6b6b;"></i>`;
+            document.getElementById('resultTitle').textContent = randomCategory.name;
+            document.getElementById('resultDescription').textContent = randomCategory.desc;
+            document.getElementById('resultAdvice').textContent = randomCategory.advice;
+            resultCard.style.display = 'block';
+        }
+
+        // Chatbot functionality
+        function toggleChatbot() {
+            const chatbot = document.getElementById('chatbot');
+            const chatToggle = document.getElementById('chatToggle');
+            if (chatbot.style.display === 'flex') {
+                chatbot.style.display = 'none';
+                chatToggle.style.display = 'block';
+            } else {
+                chatbot.style.display = 'flex';
+                chatToggle.style.display = 'none';
+            }
+        }
+
+        function sendChatMessage() {
+            const input = document.getElementById('chatInput');
+            const message = input.value.trim();
+            if (message) {
+                addMessage('user', message);
+                input.value = '';
+                // Simulate bot response
+                setTimeout(() => {
+                    const responses = [
+                        "Our AI system achieves 95% accuracy in waste classification, making it highly reliable for real-world applications.",
+                        "The system uses advanced computer vision and machine learning algorithms trained on thousands of waste images.",
+                        "You can upload images directly through our demo section to experience the AI classification in action.",
+                        "This technology helps reduce manual sorting time by up to 70% and improves recycling efficiency significantly.",
+                        "Our system classifies waste into 5 categories: Plastic, Paper, Metal, Organic, and Glass with detailed descriptions.",
+                        "The Smart Waste Management System is designed for municipal facilities, recycling centers, and smart city initiatives.",
+                        "Future enhancements include IoT integration and mobile app development for on-the-go classification.",
+                        "We're proud to contribute to environmental sustainability through cutting-edge AI technology."
+                    ];
+                    const randomResponse = responses[Math.floor(Math.random() * responses.length)];
+                    addMessage('bot', randomResponse);
+                }, 1000);
+            }
+        }
+
+        // Enter key for chat
+        document.getElementById('chatInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                sendChatMessage();
+            }
+        });
+
+        // Contact form
+        function sendMessage() {
+            const name = document.getElementById('name').value.trim();
+            const email = document.getElementById('email').value.trim();
+            const message = document.getElementById('message').value.trim();
+            if (name && email && message) {
+                saveContactMessage(name, email, message);
+                alert('Thank you for your message! The admin dashboard now stores it.');
+                document.getElementById('name').value = '';
+                document.getElementById('email').value = '';
+                document.getElementById('message').value = '';
+            } else {
+                alert('Please fill in all fields.');
+            }
+        }
+
+        function subscribeNewsletter() {
+            const email = document.getElementById('newsletterEmail').value.trim();
+            if (email) {
+                saveNewsletterSubscription(email);
+                alert('Thank you for subscribing! The admin dashboard now stores your email.');
+                document.getElementById('newsletterEmail').value = '';
+            } else {
+                alert('Please enter a valid email address.');
+            }
+        }
+
+        function getStoredItems(key) {
+            const stored = localStorage.getItem(key);
+            return stored ? JSON.parse(stored) : [];
+        }
+
+        function saveContactMessage(name, email, message) {
+            const messages = getStoredItems('swms_messages');
+            messages.unshift({ name, email, message, date: new Date().toLocaleString() });
+            localStorage.setItem('swms_messages', JSON.stringify(messages));
+        }
+
+        function saveNewsletterSubscription(email) {
+            const subscriptions = getStoredItems('swms_newsletters');
+            subscriptions.unshift({ email, date: new Date().toLocaleString() });
+            localStorage.setItem('swms_newsletters', JSON.stringify(subscriptions));
+        }
+
+        function openAdminLogin() {
+            document.getElementById('adminLoginModal').style.display = 'flex';
+        }
+
+        function closeAdminLogin() {
+            document.getElementById('adminLoginModal').style.display = 'none';
+            document.getElementById('adminPassword').value = '';
+        }
+
+        function verifyAdminLogin() {
+            const password = document.getElementById('adminPassword').value;
+            if (password === 'admin2026') {
+                closeAdminLogin();
+                openAdminPanel();
+            } else {
+                alert('Incorrect password. Please try admin2026 for demo access.');
+            }
+        }
+
+        function openAdminPanel() {
+            loadAdminDashboard();
+            document.getElementById('adminPanel').style.display = 'flex';
+        }
+
+        function closeAdminPanel() {
+            document.getElementById('adminPanel').style.display = 'none';
+        }
+
+        function loadAdminDashboard() {
+            const messages = getStoredItems('swms_messages');
+            const subscribers = getStoredItems('swms_newsletters');
+            document.getElementById('adminMessagesCount').textContent = messages.length;
+            document.getElementById('adminNewsletterCount').textContent = subscribers.length;
+
+            const list = document.getElementById('adminList');
+            list.innerHTML = '';
+            if (messages.length === 0 && subscribers.length === 0) {
+                list.innerHTML = '<p>No submissions yet. All messages and subscriptions will appear here.</p>';
+                return;
+            }
+
+            if (messages.length > 0) {
+                list.innerHTML += '<h3>Contact Messages</h3>';
+                messages.forEach((entry) => {
+                    list.innerHTML += `
+                        <div class="admin-entry">
+                            <h4>${entry.name}</h4>
+                            <p><strong>Email:</strong> ${entry.email}</p>
+                            <p>${entry.message}</p>
+                            <p style="opacity:0.75; margin-top:0.5rem;">Submitted: ${entry.date}</p>
+                        </div>
+                    `;
+                });
+            }
+
+            if (subscribers.length > 0) {
+                list.innerHTML += '<h3>Newsletter Subscribers</h3>';
+                subscribers.forEach((entry) => {
+                    list.innerHTML += `
+                        <div class="admin-entry">
+                            <h4>${entry.email}</h4>
+                            <p style="opacity:0.85;">Subscribed: ${entry.date}</p>
+                        </div>
+                    `;
+                });
+            }
+        }
+
+        function exportAdminData() {
+            const messages = getStoredItems('swms_messages');
+            const subscribers = getStoredItems('swms_newsletters');
+            let csv = 'Type,Name,Email,Message,Date\n';
+            messages.forEach(entry => {
+                csv += `Message,${entry.name},${entry.email},"${entry.message.replace(/"/g, '""')}",${entry.date}\n`;
+            });
+            subscribers.forEach(entry => {
+                csv += `Subscriber,,${entry.email},,${entry.date}\n`;
+            });
+            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = 'swms_admin_data.csv';
+            link.click();
+            URL.revokeObjectURL(url);
+        }
+
+        // Scroll animations
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('fade-in');
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.step, .feature-item, .tech-item').forEach(el => {
+            observer.observe(el);
+        });
+
+        // Scroll Progress
+        window.addEventListener('scroll', () => {
+            const scrollTop = window.pageYOffset;
+            const docHeight = document.body.offsetHeight - window.innerHeight;
+            const scrollPercent = (scrollTop / docHeight) * 100;
+            document.getElementById('scrollProgressBar').style.width = scrollPercent + '%';
+        });
+
+        // Generate Particles
+        function createParticles() {
+            const particlesContainer = document.getElementById('particles');
+            for (let i = 0; i < 50; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.animationDelay = Math.random() * 20 + 's';
+                particle.style.width = Math.random() * 4 + 2 + 'px';
+                particle.style.height = particle.style.width;
+                particlesContainer.appendChild(particle);
+            }
+        }
+        document.addEventListener('DOMContentLoaded', () => {
+            document.getElementById('addWasteBtn').addEventListener('click', simulateWasteAddition);
+            document.getElementById('emptyDustbinBtn').addEventListener('click', emptyDustbin);
+            document.getElementById('motionDetectedBtn').addEventListener('click', simulateMotion);
+            createParticles();
+            loadStatePollution();
+            updateDustbinDisplay();
+        });
+
+        // Pollution by state data
+        const pollutionData = [
+            { state: 'Alabama', plastic: 4200, paper: 2800, metal: 2100, organic: 3800, glass: 1400 },
+            { state: 'Alaska', plastic: 1800, paper: 1200, metal: 900, organic: 1600, glass: 600 },
+            { state: 'Arkansas', plastic: 3500, paper: 2400, metal: 1800, organic: 3200, glass: 1200 },
+            { state: 'Colorado', plastic: 4800, paper: 3200, metal: 2400, organic: 4300, glass: 1600 },
+            { state: 'Connecticut', plastic: 3900, paper: 2600, metal: 1900, organic: 3500, glass: 1300 },
+            { state: 'Delaware', plastic: 1100, paper: 700, metal: 500, organic: 1000, glass: 400 },
+            { state: 'Hawaii', plastic: 2200, paper: 1500, metal: 1100, organic: 2000, glass: 800 },
+            { state: 'Idaho', plastic: 2900, paper: 1900, metal: 1400, organic: 2600, glass: 1000 },
+            { state: 'Iowa', plastic: 3600, paper: 2400, metal: 1800, organic: 3300, glass: 1200 },
+            { state: 'Kansas', plastic: 3400, paper: 2300, metal: 1700, organic: 3100, glass: 1100 },
+            { state: 'Kentucky', plastic: 4100, paper: 2700, metal: 2000, organic: 3700, glass: 1300 },
+            { state: 'Louisiana', plastic: 4500, paper: 3000, metal: 2200, organic: 4100, glass: 1500 },
+            { state: 'Maine', plastic: 2500, paper: 1700, metal: 1300, organic: 2300, glass: 900 },
+            { state: 'Minnesota', plastic: 5200, paper: 3500, metal: 2600, organic: 4700, glass: 1800 },
+            { state: 'Mississippi', plastic: 3800, paper: 2500, metal: 1900, organic: 3400, glass: 1200 },
+            { state: 'Montana', plastic: 2100, paper: 1400, metal: 1000, organic: 1900, glass: 700 },
+            { state: 'Nebraska', plastic: 3200, paper: 2100, metal: 1600, organic: 2900, glass: 1000 },
+            { state: 'Nevada', plastic: 3300, paper: 2200, metal: 1600, organic: 3000, glass: 1100 },
+            { state: 'New Hampshire', plastic: 2400, paper: 1600, metal: 1200, organic: 2200, glass: 800 },
+            { state: 'New Mexico', plastic: 3100, paper: 2000, metal: 1500, organic: 2800, glass: 1000 }
+        ];
+
+        function loadStatePollution() {
+            const select = document.getElementById('stateSelect');
+            select.innerHTML = pollutionData.map((item, index) => `<option value="${index}">${item.state}</option>`).join('');
+            renderStatePollution();
+            renderPollutionTable();
+        }
+
+        function renderStatePollution() {
+            const stateIndex = Number(document.getElementById('stateSelect').value);
+            const data = pollutionData[stateIndex];
+            const total = data.plastic + data.paper + data.metal + data.organic + data.glass;
+            const categories = [
+                { label: 'Plastic', value: data.plastic },
+                { label: 'Paper', value: data.paper },
+                { label: 'Metal', value: data.metal },
+                { label: 'Organic', value: data.organic },
+                { label: 'Glass', value: data.glass }
+            ];
+            const topCategory = categories.reduce((max, item) => item.value > max.value ? item : max, categories[0]);
+
+            document.getElementById('stateSummary').innerHTML = `
+                <div class="summary-badge"><span>${total}</span>Total Waste</div>
+                <div class="summary-badge"><span>${topCategory.label}</span>Top Pollutant</div>
+                <div class="summary-badge"><span>${((topCategory.value / total) * 100).toFixed(1)}%</span>Share</div>
+            `;
+
+            document.getElementById('stateBars').innerHTML = categories.map(category => {
+                const percent = ((category.value / total) * 100).toFixed(1);
+                return `
+                    <div class="bar">
+                        <div class="bar-label"><span>${category.label}</span><span>${percent}%</span></div>
+                        <div class="bar-fill"><span style="width:${percent}%"></span></div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function renderPollutionTable() {
+            const tbody = document.querySelector('#pollutionTable tbody');
+            tbody.innerHTML = pollutionData.map(item => {
+                const total = item.plastic + item.paper + item.metal + item.organic + item.glass;
+                return `
+                    <tr>
+                        <td>${item.state}</td>
+                        <td>${item.plastic}</td>
+                        <td>${item.paper}</td>
+                        <td>${item.metal}</td>
+                        <td>${item.organic}</td>
+                        <td>${item.glass}</td>
+                        <td>${total}</td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        // Counter Animation
+        function animateCounters() {
+            const counters = document.querySelectorAll('.stat-number');
+            counters.forEach(counter => {
+                const target = +counter.getAttribute('data-target');
+                const increment = target / 100;
+                let current = 0;
+                const timer = setInterval(() => {
+                    current += increment;
+                    if (current >= target) {
+                        counter.textContent = target;
+                        clearInterval(timer);
+                    } else {
+                        counter.textContent = Math.floor(current);
+                    }
+                }, 30);
+            });
+        }
+
+        // Trigger counter animation when statistics section is visible
+        const statsObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    animateCounters();
+                    statsObserver.unobserve(entry.target);
+                }
+            });
+        });
+        statsObserver.observe(document.getElementById('statistics'));
+
+        // Newsletter Subscription
+        function subscribeNewsletter() {
+            const email = document.getElementById('newsletterEmail').value;
+            if (email) {
+                alert('Thank you for subscribing! You will receive updates on our latest developments.');
+                document.getElementById('newsletterEmail').value = '';
+            } else {
+                alert('Please enter a valid email address.');
+            }
+        }
+
+        // Enhanced Chatbot with Typing Effect
+        function addMessage(sender, text) {
+            const messages = document.getElementById('chatMessages');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${sender}`;
+            messages.appendChild(messageDiv);
+            typeText(messageDiv, text);
+            messages.scrollTop = messages.scrollHeight;
+        }
+
+        function typeText(element, text) {
+            let i = 0;
+            element.textContent = '';
+            const timer = setInterval(() => {
+                element.textContent += text.charAt(i);
+                i++;
+                if (i >= text.length) {
+                    clearInterval(timer);
+                }
+            }, 50);
+        }
+
+        // Smart Dustbin Functionality
+        let dustbinFillLevel = 0;
+        let lastCollectionTime = null;
+
+        function simulateWasteAddition() {
+            if (dustbinFillLevel >= 100) {
+                addAlert('Dustbin is already full! Please empty it first.', 'warning');
+                return;
+            }
+
+            dustbinFillLevel += Math.random() * 15 + 5; // Add 5-20% waste
+            if (dustbinFillLevel > 100) dustbinFillLevel = 100;
+
+            updateDustbinDisplay();
+
+            if (dustbinFillLevel >= 80 && dustbinFillLevel < 90) {
+                addAlert('Dustbin is getting full (80%+). Consider scheduling collection.', 'warning');
+            } else if (dustbinFillLevel >= 90) {
+                addAlert('Dustbin is nearly full! Immediate collection recommended.', 'danger');
+                showMobileAlert();
+            }
+        }
+
+        function emptyDustbin() {
+            dustbinFillLevel = 0;
+            lastCollectionTime = new Date().toLocaleString();
+            updateDustbinDisplay();
+            addAlert('Dustbin emptied successfully. Collection completed.', 'info');
+            hideMobileAlert();
+        }
+
+        function simulateMotion() {
+            const lid = document.getElementById('dustbinLid');
+            lid.classList.add('open');
+
+            addAlert('Motion detected! Auto-opening lid for user convenience.', 'info');
+
+            setTimeout(() => {
+                lid.classList.remove('open');
+                addAlert('Lid closed automatically.', 'info');
+            }, 3000);
+        }
+
+        function updateDustbinDisplay() {
+            const content = document.getElementById('dustbinContent');
+            const fillLevel = document.getElementById('fillLevel');
+            const status = document.getElementById('dustbinStatus');
+            const appFillLevel = document.getElementById('appFillLevel');
+
+            content.style.height = dustbinFillLevel + '%';
+            fillLevel.textContent = Math.round(dustbinFillLevel) + '%';
+            appFillLevel.textContent = Math.round(dustbinFillLevel) + '% Full';
+
+            if (dustbinFillLevel === 0) {
+                status.textContent = 'Empty';
+                status.style.color = '#4ecdc4';
+            } else if (dustbinFillLevel < 50) {
+                status.textContent = 'Low';
+                status.style.color = '#4ecdc4';
+            } else if (dustbinFillLevel < 80) {
+                status.textContent = 'Medium';
+                status.style.color = '#ffc107';
+            } else if (dustbinFillLevel < 100) {
+                status.textContent = 'High';
+                status.style.color = '#ff6b6b';
+            } else {
+                status.textContent = 'Full';
+                status.style.color = '#ff6b6b';
+            }
+
+            document.getElementById('lastCollection').textContent = lastCollectionTime || 'Never';
+        }
+
+        function addAlert(message, type) {
+            const alertsList = document.getElementById('alertsList');
+            const alertItem = document.createElement('div');
+            alertItem.className = `alert-item ${type}`;
+
+            const iconClass = type === 'info' ? 'fa-info-circle' :
+                             type === 'warning' ? 'fa-exclamation-triangle' : 'fa-exclamation-circle';
+
+            alertItem.innerHTML = `
+                <i class="fas ${iconClass}"></i>
+                <span>${message}</span>
+            `;
+
+            alertsList.insertBefore(alertItem, alertsList.firstChild);
+
+            // Auto-remove after 10 seconds
+            setTimeout(() => {
+                if (alertItem.parentNode) {
+                    alertItem.remove();
+                }
+            }, 10000);
+        }
+
+        function showMobileAlert() {
+            const notification = document.getElementById('appNotification');
+            notification.style.display = 'flex';
+
+            // Simulate vibration effect
+            notification.style.animation = 'notification-pulse 0.5s ease-in-out';
+
+            setTimeout(() => {
+                notification.style.animation = '';
+            }, 500);
+        }
+
+        function hideMobileAlert() {
+            document.getElementById('appNotification').style.display = 'none';
+        }
+
+        const routeBins = [
+            { name: 'Central Park Bin', location: 'Central Park, Sector 5', fill: 93, dist: 2.8 },
+            { name: 'Market Street Bin', location: 'Market Street, Block A', fill: 81, dist: 1.9 },
+            { name: 'School Avenue Bin', location: 'School Avenue, Zone 3', fill: 65, dist: 2.2 },
+            { name: 'Museum Lane Bin', location: 'Museum Lane, Bay 7', fill: 72, dist: 3.4 },
+            { name: 'Station Road Bin', location: 'Station Road, Plaza 1', fill: 58, dist: 1.5 }
+        ];
+
+        function generateRoute() {
+            const urgentBins = routeBins
+                .filter(bin => bin.fill >= 60)
+                .sort((a, b) => b.fill - a.fill);
+
+            const routeMap = document.getElementById('routeMap');
+            const routeSteps = document.getElementById('routeSteps');
+            const routeDistance = document.getElementById('routeDistance');
+            const routeStops = document.getElementById('routeStops');
+            const routeSavings = document.getElementById('routeSavings');
+
+            routeMap.innerHTML = '<div class="route-point start">Depot</div>';
+            let totalDistance = 0;
+            let stepsHtml = '';
+
+            if (urgentBins.length === 0) {
+                stepsHtml = '<div class="route-step"><strong>No urgent collection needed.</strong><p>All bins are currently below the priority threshold.</p></div>';
+            } else {
+                urgentBins.forEach((bin, index) => {
+                    totalDistance += bin.dist;
+                    routeMap.innerHTML += `\n                        <div class="route-point stop">${index + 1}. ${bin.name} (${bin.fill}% full)</div>`;
+                    stepsHtml += `\n                        <div class="route-step"><strong>Stop ${index + 1}: ${bin.name}</strong><span>${bin.location}</span><span>Fill ${bin.fill}% • ${bin.dist} km</span></div>`;
+                });
+            }
+
+            routeDistance.textContent = totalDistance.toFixed(1);
+            routeStops.textContent = urgentBins.length;
+            routeSavings.textContent = urgentBins.length ? '18%' : '0%';
+            routeSteps.innerHTML = stepsHtml;
+
+            if (urgentBins.length) {
+                addAlert('Route optimized using GPS and smart bin fill data.', 'info');
+            }
+        }
+
+        function scheduleCollection() {
+            addAlert('Collection scheduled for tomorrow morning. Team notified via mobile app.', 'info');
+            alert('Collection scheduled! The waste management team has been notified via the mobile app.');
+        }
+
+        function viewRoute() {
+            addAlert('Opening route optimization for collection vehicle.', 'info');
+            alert('Route optimized! Collection vehicle will arrive in approximately 2 hours.');
+        }
+    </script>
+</body>
+</html>
